@@ -12,12 +12,14 @@
   :plugins [[lein-cljsbuild "1.1.1-SNAPSHOT"]]
   :figwheel {:css-dirs ["resources/public/css"]}
   :profiles {:dev {:dependencies [[com.cemerick/piggieback "0.2.1"]
-                                  [figwheel-sidecar "0.5.7"]]
+                                  [figwheel-sidecar "0.5.7"]
+                                  [binaryage/devtools "0.8.1"]]
                    :source-paths ["dev" "src"]
                    :cljsbuild {:builds [{:id "dev"
                                          :source-paths ["dev" "src"]
                                          :figwheel true
                                          :compiler {:main "city.core"
+                                                    :preloads [devtools.preload]
                                                     :asset-path "cljs/out"
                                                     :output-to "resources/public/cljs/main.js"
                                                     :output-dir "resources/public/cljs/out"
