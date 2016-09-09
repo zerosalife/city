@@ -1,0 +1,6 @@
+*~*
+target/
+.nrepl-port
+figwheel_server.log
+.projectile
+resources/public/cljs/

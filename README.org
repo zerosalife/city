@@ -1,0 +1,8 @@
+* City
+* Starting the Figwheel repl
+=C-c M-j= to jack in.
+
+#+BEGIN_SRC clojure
+  dev.repl> (figwheel-up)
+
+#+END_SRC
