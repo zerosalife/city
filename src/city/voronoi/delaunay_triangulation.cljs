@@ -28,3 +28,20 @@
 (defn contains-point? [{:keys [x y radius-squared]} {px :x py :y}]
   (let [distance-squared (+ (Math/pow (- x px) 2) (Math/pow (- y py) 2))]
     (< distance-squared radius-squared)))
+
+(defn outer-edges [triangles]
+  (let [all-edges (mapcat edges triangles)
+        matches (fn [edge] (filter #{edge (reverse edge)} all-edges))
+        appears-once (fn [edge] (= (count (matches edge)) 1))]
+    (filter appears-once all-edges)))
+
+(defn make-new-triangles [containers point]
+  (->> containers
+       outer-edges
+       (map (fn [[p1 p2]] [p1 p2 point]))
+       set))
+
+(defn add-point-to-triangles [triangles point]
+  (let [containers (filter #(contains-point? (circumscribe-triangle %) point) triangles)
+        new-triangles (make-new-triangles containers point)]
+    (clojure.set/union (clojure.set/difference triangles containers) new-triangles)))

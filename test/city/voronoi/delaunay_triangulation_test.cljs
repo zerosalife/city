@@ -41,3 +41,30 @@
     (is (= false
            (delaunay/contains-point? (c. 4 2 20.0)
                                      (p. 24 0))))))
+
+(deftest outer-edges-test
+  (let [triangles [[(p. 0 0) (p. 1 0) (p. 0 -1)]
+                   [(p. 0 0) (p. 0 -1) (p. -1 -1)]
+                   [(p. 0 0) (p. -1 -1) (p. -1 0)]
+                   [(p. 0 0) (p. -1 0) (p. 1 0)]]]
+    (is (= [[(p. 1 0) (p. 0 -1)] [(p. 0 -1) (p. -1 -1)] [(p. -1 -1) (p. -1 0)] [(p. -1 0) (p. 1 0)]]
+           (delaunay/outer-edges triangles)))))
+
+(deftest make-new-triangles-test
+  (is (= #{[(p. -5 5) (p. -5 -5) (p. 0 1)]
+           [(p. 5 5) (p. 5 -5) (p. 0 1)]
+           [(p. -5 -5) (p. 5 -5) (p. 0 1)]
+           [(p. -5 5) (p. 5 5) (p. 0 1)]}
+         (delaunay/make-new-triangles [[(p. -5 -5) (p. 5 -5) (p. -5 5)] [(p. 5 -5) (p. -5 5) (p. 5 5)]]
+                                      (p. 0 1)))))
+
+(deftest add-point-to-triangles-test
+  (is (= #{[(p. -50 -50) (p. -55 -50) (p. -50 -55)]
+           [(p. -5 5) (p. -5 -5) (p. 0 1)]
+           [(p. 5 5) (p. 5 -5) (p. 0 1)]
+           [(p. -5 -5) (p. 5 -5) (p. 0 1)]
+           [(p. -5 5) (p. 5 5) (p. 0 1)]}
+         (delaunay/add-point-to-triangles #{[(p. -50 -50) (p. -55 -50) (p. -50 -55)]
+                                            [(p. -5 -5) (p. 5 -5) (p. -5 5)]
+                                            [(p. 5 -5) (p. -5 5) (p. 5 5)]}
+                                          (p. 0 1)))))
