@@ -1,7 +1,8 @@
 (ns city.voronoi.delaunay-triangulation
   "Ported with many thanks from [trystan/delaunay-triangulation
   \"1.0.1\"] © 2015 Trystan under Eclipse Public License 1.0."
-  (:require [clojure.set]))
+  (:require [clojure.set]
+            [city.voronoi.point :as p]))
 
 (def very-small-float 0.000001)
 
@@ -45,3 +46,10 @@
   (let [containers (filter #(contains-point? (circumscribe-triangle %) point) triangles)
         new-triangles (make-new-triangles containers point)]
     (clojure.set/union (clojure.set/difference triangles containers) new-triangles)))
+
+(defn bounds [points]
+  (let [minx (->> points (map :x) (apply min) (+ -1000))
+        maxx (->> points (map :x) (apply max) (+ 1000))
+        miny (->> points (map :y) (apply min) (+ -1000))
+        maxy (->> points (map :y) (apply max) (+ 1000))]
+    [(p/Point. minx maxy) (p/Point. maxx maxy) (p/Point. minx miny) (p/Point. maxx miny)]))
