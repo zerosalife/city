@@ -6,9 +6,15 @@
             [city.voronoi.point :as point]))
 
 (deftest circumscribe-triangle-test
-  (let [point-list [(point/Point. 0 0)
-                    (point/Point. 8 0)
-                    (point/Point. 0 4)]])
+  (let [valid-point-list [(point/Point. 0 0)
+                          (point/Point. 8 0)
+                          (point/Point. 0 4)]
+        invalid-point-list [(point/Point. 0 0)
+                            (point/Point. 8 0)
+                            (point/Point. 12 0)]])
   (testing "returns x y and radius squared for valid triangles"
     (is (= {:x 4 :y 2 :radius-squared 20.0}
-           (delaunay/circumscribe-triangle [[0 0] [8 0] [0 4]])))))
+           (delaunay/circumscribe-triangle [[0 0] [8 0] [0 4]]))))
+  (testing "returns nil for invalid triangles"
+    (is (= nil
+           (delaunay/circumscribe-triangle [[0 0] [8 0] [12 0]])))))
