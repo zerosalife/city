@@ -29,7 +29,15 @@
 
 
 (deftest contains-point-test
-  (testing "contains-point? inside circle"
+  (testing "contains-point? inside circle is true"
     (is (= true
-           (delaunay/contains-point? {:x 4 :y 2 :radius-squared 20.0}
-                                     (p. 3 3))))))
+           (delaunay/contains-point? (delaunay/map->Circle {:x 4 :y 2 :radius-squared 20.0})
+                                     (p. 3 3)))))
+  (testing "contains-point? outside circle is false"
+    (is (= false
+           (delaunay/contains-point? (c. 4 2 20.0)
+                                     (p. 30 30)))))
+    (testing "contains-point? on circle is false"
+    (is (= false
+           (delaunay/contains-point? (c. 4 2 20.0)
+                                     (p. 24 0))))))
