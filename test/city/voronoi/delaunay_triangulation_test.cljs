@@ -6,6 +6,7 @@
             [city.voronoi.point :as point]))
 
 (def p point/Point)
+(def c delaunay/Circle)
 
 (deftest circumscribe-triangle-test
   (let [p1 (p. 0 0)
@@ -13,7 +14,7 @@
         p3 (p. 0 4)
         p4 (p. 12 0)]
     (testing "returns x y and radius squared for valid triangles"
-      (is (= {:x 4 :y 2 :radius-squared 20.0}
+      (is (= (delaunay/map->Circle {:x 4 :y 2 :radius-squared 20.0})
              (delaunay/circumscribe-triangle [p1 p2 p3]))))
     (testing "returns nil for invalid triangles"
       (is (= nil

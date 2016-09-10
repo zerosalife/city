@@ -5,6 +5,8 @@
 
 (def very-small-float 0.000001)
 
+(defrecord Circle [x y radius-squared])
+
 (defn circumscribe-triangle [[{ax :x ay :y} {bx :x by :y} {cx :x cy :y}]]
   (let [A (- bx ax)
         B (- by ay)
@@ -19,7 +21,7 @@
             dx (- cx ax)
             dy (- cy ay)
             r (+ (Math/pow dx 2) (Math/pow dy 2))]
-        {:x cx :y cy :radius-squared r}))))
+        (Circle. cx cy r)))))
 
 (defn edges [[p1 p2 p3]] [[p1 p2] [p2 p3] [p3 p1]])
 
