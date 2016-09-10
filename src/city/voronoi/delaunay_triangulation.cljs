@@ -22,3 +22,7 @@
         {:x cx :y cy :radius-squared r}))))
 
 (defn edges [[p1 p2 p3]] [[p1 p2] [p2 p3] [p3 p1]])
+
+(defn contains-point? [{:keys [x y radius-squared]} {px :x py :y}]
+  (let [distance-squared (+ (Math/pow (- x px) 2) (Math/pow (- y py) 2))]
+    (< distance-squared radius-squared)))

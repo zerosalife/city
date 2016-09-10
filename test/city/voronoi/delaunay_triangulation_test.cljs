@@ -25,3 +25,10 @@
         p3 (p. 0 1)]
     (is (= [[p1 p2] [p2 p3] [p3 p1]]
            (delaunay/edges [p1 p2 p3])))))
+
+
+(deftest contains-point-test
+  (testing "contains-point? inside circle"
+    (is (= true
+           (delaunay/contains-point? {:x 4 :y 2 :radius-squared 20.0}
+                                     (p. 3 3))))))
