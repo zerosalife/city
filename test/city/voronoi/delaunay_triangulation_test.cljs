@@ -72,3 +72,18 @@
 (deftest bounds-test
   (is (= [(p. -1010 1010) (p. 1400 1010) (p. -1010 -1020) (p. 1400 -1020)]
          (delaunay/bounds [(p. -10 10) (p. 0 0) (p. 400 -20)]))))
+
+(deftest triangulate-test
+  (testing "triangulate with valid points"
+    (is (= {:points [(p. -10.0 10.0) (p. 0.0 5.0) (p. 10.0 20.0)]
+            :triangles [[(p. 0.0 5.0) (p. -10.0 10.0) (p. 10.0 20.0)]]
+            :edges [[(p. 0.0 5.0) (p. -10.0 10.0)]
+                    [(p. -10.0 10.0) (p. 10.0 20.0)]
+                    [(p. 10.0 20.0) (p. 0.0 5.0)]]}
+           (delaunay/triangulate [(p. -10 10) (p. 0 5) (p. 10 20)]))))
+
+  (testing "triangulate with co-linear points"
+    (is (= {:points [(p. -10.0 10.0) (p. 0.0 10.0) (p. 10.0 10.0)],
+            :triangles [],
+            :edges []}
+           (delaunay/triangulate [(p. -10 10) (p. 0 10) (p. 10 10)])))))

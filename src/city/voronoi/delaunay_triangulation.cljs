@@ -53,3 +53,13 @@
         miny (->> points (map :y) (apply min) (+ -1000))
         maxy (->> points (map :y) (apply max) (+ 1000))]
     [(p/Point. minx maxy) (p/Point. maxx maxy) (p/Point. minx miny) (p/Point. maxx miny)]))
+
+(defn triangulate [points]
+  (let [points (map (fn [{x :x y :y}] (p/Point. (float x) (float y))) points)
+        [tl tr bl br] (bounds points)
+        initial #{[tl tr bl] [bl tr br]}
+        with-bounds (reduce add-point-to-triangles initial points)
+        triangles (remove #(some #{tl tr bl br} %) with-bounds)]
+    {:points points
+     :triangles triangles
+     :edges (distinct (mapcat edges triangles))}))
