@@ -8,7 +8,8 @@
   :repl-options {:init-ns dev.repl}
   :min-lein-version "2.5.3"
   :dependencies [[org.clojure/clojure "1.9.0-alpha12"]
-                 [org.clojure/clojurescript "1.9.229"]]
+                 [org.clojure/clojurescript "1.9.229"]
+                 [cljsjs/d3 "4.2.2-0"]]
   :plugins [[lein-cljsbuild "1.1.1-SNAPSHOT"]]
   :figwheel {:css-dirs ["resources/public/css"]}
   :profiles {:dev {:dependencies [[com.cemerick/piggieback "0.2.1"]
