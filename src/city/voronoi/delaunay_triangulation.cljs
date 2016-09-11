@@ -4,11 +4,8 @@
   (:require [clojure.set]
             [city.voronoi.point :as p]))
 
-(def very-small-float 0.000001)
-
-(defrecord Circle [x y radius-squared])
-
-(defn circumscribe-triangle [[{ax :x ay :y} {bx :x by :y} {cx :x cy :y}]]
+;; https://gist.github.com/mutoo/5617691
+(defn circumscribe-triangle [[[ax ay] [bx by] [cx cy]]]
   (let [A (- bx ax)
         B (- by ay)
         C (- cx ax)
@@ -16,17 +13,17 @@
         E (+ (* A (+ ax bx)) (* B (+ ay by)))
         F (+ (* C (+ ax cx)) (* D (+ ay cy)))
         G (* 2 (- (* A (- cy by)) (* B (- cx bx))))]
-    (when (> (Math/abs G) very-small-float)
+    (when (> (Math/abs G) 0.000001)
       (let [cx (/ (- (* D E) (* B F)) G)
             cy (/ (- (* A F) (* C E)) G)
             dx (- cx ax)
             dy (- cy ay)
             r (+ (Math/pow dx 2) (Math/pow dy 2))]
-        (Circle. cx cy r)))))
+        {:x cx :y cy :radius-squared r}))))
 
 (defn edges [[p1 p2 p3]] [[p1 p2] [p2 p3] [p3 p1]])
 
-(defn contains-point? [{:keys [x y radius-squared]} {px :x py :y}]
+(defn contains-point? [{:keys [x y radius-squared]} [px py]]
   (let [distance-squared (+ (Math/pow (- x px) 2) (Math/pow (- y py) 2))]
     (< distance-squared radius-squared)))
 
@@ -48,14 +45,15 @@
     (clojure.set/union (clojure.set/difference triangles containers) new-triangles)))
 
 (defn bounds [points]
-  (let [minx (->> points (map :x) (apply min) (+ -1000))
-        maxx (->> points (map :x) (apply max) (+ 1000))
-        miny (->> points (map :y) (apply min) (+ -1000))
-        maxy (->> points (map :y) (apply max) (+ 1000))]
-    [(p/Point. minx maxy) (p/Point. maxx maxy) (p/Point. minx miny) (p/Point. maxx miny)]))
+  (let [minx (->> points (map first) (apply min) (+ -1000))
+        maxx (->> points (map first) (apply max) (+ 1000))
+        miny (->> points (map second) (apply min) (+ -1000))
+        maxy (->> points (map second) (apply max) (+ 1000))]
+    [[minx maxy] [maxx maxy] [minx miny] [maxx miny]]))
 
+;; http://paulbourke.net/papers/triangulate/
 (defn triangulate [points]
-  (let [points (map (fn [{x :x y :y}] (p/Point. (float x) (float y))) points)
+  (let [points (map (fn [[x y]] [(float x) (float y)]) points)
         [tl tr bl br] (bounds points)
         initial #{[tl tr bl] [bl tr br]}
         with-bounds (reduce add-point-to-triangles initial points)
